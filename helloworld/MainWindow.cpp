@@ -1,3 +1,4 @@
+#include <cmath>
 #include <windowsx.h>
 #include <Strsafe.h>
 #include "common.h"
@@ -178,6 +179,8 @@ void MainWindow::OnPaint()
 		for (ELLIPSEList::const_iterator it = ellipses.begin(); it != ellipses.end(); it++)
 		{
 			pRenderTarget->DrawEllipse(*it, pBrush);
+
+			DrawStar(pRenderTarget, *it, pBrush);
 		}
 
 		hr = pRenderTarget->EndDraw();
@@ -267,4 +270,42 @@ void MainWindow::OnButtonEventFired( PCWSTR eventName, LPARAM lParam )
 	}
 
 	MessageBox(m_hwnd, buf, L"Button Event Fired", MB_OK);
+}
+
+void MainWindow::DrawStar( ID2D1HwndRenderTarget * pRenderTarget, const D2D1_ELLIPSE& it, ID2D1SolidColorBrush * pBrush )
+{
+	const FLOAT PI = 3.14159265;
+	const FLOAT radian = PI / 180;
+	D2D1_POINT_2F points[5];
+	int angle = 0;
+	FLOAT x = 0;
+	FLOAT y = 0;
+
+	for(int i = 0; i < 5; i++)
+	{
+		x = it.point.x + it.radiusX * cos(angle);
+		y = it.point.y + it.radiusY * sin(angle);
+
+		points[i].x = x;
+		points[i].y = y;
+
+		D2D1_ELLIPSE smallCircle;
+		smallCircle.point = points[i];
+		smallCircle.radiusX = 5;
+		smallCircle.radiusY = 5;
+
+		pRenderTarget->DrawEllipse(smallCircle, pBrush);
+
+		angle += 72;
+	}
+
+	int ii = 0, jj = 0;
+
+	for (int i = 0; i < 5; i++)
+	{
+		ii = i;
+		jj = (ii + 2) % 5;
+
+		pRenderTarget->DrawLine(points[ii], points[jj], pBrush);
+	}
 }

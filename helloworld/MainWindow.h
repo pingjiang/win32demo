@@ -32,7 +32,7 @@ public:
 
 private:
 	void OnButtonEventFired(PCWSTR eventName, LPARAM lParam);
-
+	void DrawStar( ID2D1HwndRenderTarget * pRenderTarget, const D2D1_ELLIPSE& it, ID2D1SolidColorBrush * pBrush );
 private:
 	ID2D1Factory            *pFactory;
 	ID2D1HwndRenderTarget   *pRenderTarget;
